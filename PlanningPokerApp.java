@@ -1,8 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sound.midi.Soundbank;
-
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -58,6 +56,7 @@ public class PlanningPokerApp extends Application {
         Button startPlanningPokerButton = new Button("Start Planning Poker");
         startPlanningPokerButton.setOnAction(e -> showScreen(planningPokerScreen, "Planning Poker", primaryStage));
         HBox buttonsUserStory = new HBox();
+        buttonsUserStory.setAlignment(Pos.CENTER);
         buttonsUserStory.getChildren().addAll(backButtonUserStory, addUserStoryButton, startPlanningPokerButton);
         descriptionInput.setPrefSize(20, 80);
         userStoryScreen.getChildren().addAll(titleLabel, titleInput, descriptionLabel, descriptionInput, buttonsUserStory);
