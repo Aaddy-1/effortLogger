@@ -1,38 +1,30 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "java",
-            "name": "PlanningPokerApp",
-            "request": "launch",
-            "mainClass": "PlanningPokerApp",
-            "projectName": "effortLogger_ad7ab7e8",
-            "vmArgs": "--module-path /Users/aadeesh/Downloads/javafx-sdk-21/lib --add-modules javafx.controls,javafx.fxml"
-        },
-        {
-            "type": "java",
-            "name": "ScreenChangeExample",
-            "request": "launch",
-            "mainClass": "ScreenChangeExample",
-            "projectName": "effortLogger_ad7ab7e8",
-            "vmArgs": "--module-path /Users/aadeesh/Downloads/javafx-sdk-21/lib --add-modules javafx.controls,javafx.fxml"
-        },
-        {
-            "type": "java",
-            "name": "Current File",
-            "request": "launch",
-            "mainClass": "${file}"
-        },
-        {
-            "type": "java",
-            "name": "PlanningPokerPrototype",
-            "request": "launch",
-            "mainClass": "PlanningPokerPrototype",
-            "projectName": "effortLogger_ad7ab7e8",
-            "vmArgs": "--module-path /Users/aadeesh/Downloads/javafx-sdk-21/lib --add-modules javafx.controls,javafx.fxml"
-        }
-    ]
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Launch Current File",
+      "request": "launch",
+      "mainClass": "${file}"
+    },
+    {
+      "type": "java",
+      "name": "PlanningPokerApp",
+      "request": "launch",
+      "vmArgs": "--module-path /Users/laytoder/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.controls,javafx.fxml",
+      "mainClass": "PlanningPokerApp",
+      "projectName": "effortLogger_54762d93"
+    },
+    {
+      "type": "java",
+      "name": "ScreenChangeExample",
+      "request": "launch",
+      "vmArgs": "--module-path /Users/laytoder/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.controls,javafx.fxml",
+      "mainClass": "ScreenChangeExample",
+      "projectName": "effortLogger_54762d93"
+    }
+  ]
 }
