@@ -88,11 +88,15 @@ public class PlanningPokerApp extends Application {
             AnonymityVerifier anonymityVerifier = new AnonymityVerifier();
             anonymityVerifier.start(new Stage());
         });
-        Button riskReduction3 = new Button("Risk Reduction Prototype 3");
-        riskReduction3.setPadding(new Insets(10));
+        Button securityValidationButton = new Button("Security Validation");
+        securityValidationButton.setPadding(new Insets(10));
+        securityValidationButton.setOnAction(e -> {
+            SecurityValidation securityValidation = new SecurityValidation();
+            securityValidation.start(new Stage());
+        });
         Button riskReduction4 = new Button("Risk Reduction Prototype 4");
         riskReduction4.setPadding(new Insets(10));
-        mainMenu.getChildren().addAll(planningPokerButton, scalabilityAnalyzerButton, anonymityVerifierButton, riskReduction3, riskReduction4);
+        mainMenu.getChildren().addAll(planningPokerButton, scalabilityAnalyzerButton, anonymityVerifierButton, securityValidationButton, riskReduction4);
         mainMenu.setAlignment(Pos.CENTER);
         mainMenu.setPadding(new Insets(5));
 
