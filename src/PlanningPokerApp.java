@@ -76,15 +76,23 @@ public class PlanningPokerApp extends Application {
         Button planningPokerButton = new Button("Start planning poker session");
         planningPokerButton.setPadding(new Insets(10));
         planningPokerButton.setOnAction(e -> showScreen(userStoryScreen, "Adding user stories"));
-        Button riskReduction1 = new Button("Risk Reduction Prototype 1");
-        riskReduction1.setPadding(new Insets(10));
-        Button riskReduction2 = new Button("Risk Reduction Prototype 2");
-        riskReduction1.setPadding(new Insets(10));
+        Button scalabilityAnalyzerButton = new Button("Scalability Analyzer");
+        scalabilityAnalyzerButton.setPadding(new Insets(10));
+        scalabilityAnalyzerButton.setOnAction(e -> {
+            ScalabilityAnalyzer scalabilityAnalyzer = new ScalabilityAnalyzer();
+            scalabilityAnalyzer.start(new Stage());
+        });
+        Button anonymityVerifierButton = new Button("Anonymity Verifier");
+        anonymityVerifierButton.setPadding(new Insets(10));
+        anonymityVerifierButton.setOnAction(e -> {
+            AnonymityVerifier anonymityVerifier = new AnonymityVerifier();
+            anonymityVerifier.start(new Stage());
+        });
         Button riskReduction3 = new Button("Risk Reduction Prototype 3");
         riskReduction3.setPadding(new Insets(10));
         Button riskReduction4 = new Button("Risk Reduction Prototype 4");
         riskReduction4.setPadding(new Insets(10));
-        mainMenu.getChildren().addAll(planningPokerButton, riskReduction1, riskReduction2, riskReduction3, riskReduction4);
+        mainMenu.getChildren().addAll(planningPokerButton, scalabilityAnalyzerButton, anonymityVerifierButton, riskReduction3, riskReduction4);
         mainMenu.setAlignment(Pos.CENTER);
         mainMenu.setPadding(new Insets(5));
 
