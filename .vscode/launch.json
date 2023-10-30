@@ -17,14 +17,6 @@
       "vmArgs": "--module-path /Users/laytoder/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.controls,javafx.fxml",
       "mainClass": "PlanningPokerApp",
       "projectName": "effortLogger_54762d93"
-    },
-    {
-      "type": "java",
-      "name": "ScreenChangeExample",
-      "request": "launch",
-      "vmArgs": "--module-path /Users/laytoder/Downloads/javafx-sdk-17.0.9/lib --add-modules javafx.controls,javafx.fxml",
-      "mainClass": "ScreenChangeExample",
-      "projectName": "effortLogger_54762d93"
     }
   ]
 }
