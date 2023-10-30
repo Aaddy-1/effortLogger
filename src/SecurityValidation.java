@@ -9,6 +9,16 @@ public class SecurityValidation extends Application {
         launch(args);
     }
 
+    public int comparer(String enteredUsername, String expectedUsername) {
+        int result = 2;
+        if (enteredUsername.matches(".*\\s.*") || !enteredUsername.matches("[a-zA-Z0-9]+")) {
+                result = 0;
+            } else if (expectedUsername.equals(enteredUsername)) {
+                result = 1;
+            }
+        return result;
+    }
+
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Security Validation Prototype");
@@ -19,15 +29,17 @@ public class SecurityValidation extends Application {
         Button validateButton = new Button("Validate Access");
         Label resultLabel = new Label();
 
+
         // Set action for the validation button
         validateButton.setOnAction(e -> {
             String enteredUsername = usernameInput.getText();  
             String expectedUsername = removeSpecialCharacters(enteredUsername);
 
+            int result = comparer(enteredUsername, expectedUsername);
             // Check if the entered username contains any spaces or special characters
-            if (enteredUsername.matches(".*\\s.*") || !enteredUsername.matches("[a-zA-Z0-9]+")) {
+            if (result == 0) {
                 resultLabel.setText("Access Denied: Username contains spaces or special characters.");
-            } else if (expectedUsername.equals(enteredUsername)) {
+            } else if (result == 1) {
                 resultLabel.setText("Access Granted");
             } else {
                 resultLabel.setText("Access Denied");

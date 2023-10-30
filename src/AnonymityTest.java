@@ -3,9 +3,9 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class AnonymityTest {
+    AnonymityVerifier verifier =  new AnonymityVerifier();
     @Test
     public void TestVerifyAnonymizationTrue() {
-        AnonymityVerifier verifier =  new AnonymityVerifier();
         boolean result = verifier.verifyAnonymization(
             "Employee Name: John Doe\n" + //
             "Employee ID: 12345\n" + //
@@ -21,7 +21,6 @@ public class AnonymityTest {
     }
     @Test
     public void TestVerifyAnonymizationFalse() {
-        AnonymityVerifier verifier = new AnonymityVerifier();
         boolean result = verifier.verifyAnonymization(
             "Employee Name: John Doe\n" + //
             "Employee ID: 12345\n" + //
