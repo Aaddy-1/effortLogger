@@ -110,7 +110,7 @@ public class AnonymityVerifier extends Application {
             
     }
 
-    private boolean verifyAnonymization(String originalReport, String anonymizedReport) {
+    public boolean verifyAnonymization(String originalReport, String anonymizedReport) {
         // In a real application, you would implement the verification logic here.
         // For this prototype, we'll assume it's properly anonymized if the lengths match.
         System.out.println("a +" + originalReport);
