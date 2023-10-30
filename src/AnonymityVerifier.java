@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 
-public class aadeeshRiskReductionPrototype extends Application {
+public class AnonymityVerifier extends Application {
 
     private BorderPane borderPane;
     String fileContents = "";
