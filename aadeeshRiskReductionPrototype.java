@@ -40,7 +40,7 @@ public class aadeeshRiskReductionPrototype extends Application {
             "Project: Project X\n" +
             "Hours Worked: 40\n" +
             "");
-
+        Button backButton = new Button("Back to file upload");
         anonymizedTextArea.setWrapText(true);
         Button verifyButton = new Button("Verify Anonymization");
 
@@ -48,7 +48,7 @@ public class aadeeshRiskReductionPrototype extends Application {
         VBox root = new VBox(5);
         root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(5));
-        root.getChildren().addAll(titleLabel, originalLabel, originalTextArea, anonymizedLabel, anonymizedTextArea, verifyButton);
+        root.getChildren().addAll(titleLabel, originalLabel, originalTextArea, anonymizedLabel, anonymizedTextArea, verifyButton, backButton);
 
         // Handle verify button click
         verifyButton.setOnAction(e -> {
@@ -81,7 +81,7 @@ public class aadeeshRiskReductionPrototype extends Application {
         });
 
         mainMenu.getChildren().addAll(fileUploadButton, goToVerification);
-
+        backButton.setOnAction(e -> showScreen(mainMenu, "File Upload", primaryStage));
 
         // Set up the scene
         Scene scene = new Scene(borderPane, 400, 400);
