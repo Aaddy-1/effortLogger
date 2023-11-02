@@ -8,7 +8,7 @@ public class SecurityTest {
 
     @Test
     public void verifyUsernameSpecialCharacters() {
-        int result = securityValidator.comparer("tathagat panwar2", "tathagatpanwar2");
+        int result = securityValidator.comparer("tathagat panwar21", "tathagatpanwar2");
         assertEquals(0, result);
     }
 
