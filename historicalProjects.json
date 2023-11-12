@@ -12,11 +12,26 @@
             "title": "Project B",
             "description": "Implemented new features in mobile app",
             "timeTaken": 30
+          },
+          {
+            "title": "Project I",
+            "description": "Optimized perfomance of critical app functions",
+            "timeTaken": 50
+          },
+          {
+            "title": "Project J",
+            "description": "Developed a unique algorithm for an autonomous vehicle",
+            "timeTaken": 60
+          },
+          {
+            "title": "Project K",
+            "description": "Managed energy consumption on resource hungry application",
+            "timeTaken": 50
           }
         ]
       },
       {
-        "username": "sampleuser2",
+        "username": "testuser2",
         "projects": [
           {
             "title": "Project C",
@@ -27,11 +42,16 @@
             "title": "Project D",
             "description": "Optimized server performance",
             "timeTaken": 50
+          },
+          {
+            "title": "Project X",
+            "description": "Created a planning poker app",
+            "timeTaken": 50
           }
         ]
       },
       {
-        "username": "demoaccount3",
+        "username": "testuser3",
         "projects": [
           {
             "title": "Project E",
@@ -46,15 +66,15 @@
         ]
       },
       {
-        "username": "fakeuser4",
+        "username": "testuser4",
         "projects": [
           {
-            "title": "Project E",
+            "title": "Project G",
             "description": "Developed a mobile game",
             "timeTaken": 35
           },
           {
-            "title": "Project F",
+            "title": "Project H",
             "description": "Created a machine learning model",
             "timeTaken": 60
           }
