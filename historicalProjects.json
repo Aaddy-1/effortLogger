@@ -16,7 +16,7 @@
         ]
       },
       {
-        "username": "sampleuser2",
+        "username": "testuser2",
         "projects": [
           {
             "title": "Project C",
@@ -31,7 +31,7 @@
         ]
       },
       {
-        "username": "demoaccount3",
+        "username": "testuser3",
         "projects": [
           {
             "title": "Project E",
