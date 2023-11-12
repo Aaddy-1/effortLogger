@@ -1,3 +1,5 @@
+package main;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -82,20 +84,28 @@ public class PlanningPokerApp extends Application {
             ScalabilityAnalyzer scalabilityAnalyzer = new ScalabilityAnalyzer();
             scalabilityAnalyzer.start(new Stage());
         });
+
+        // Anonymity Verifier Risk Reduction Prototype
         Button anonymityVerifierButton = new Button("Anonymity Verifier");
         anonymityVerifierButton.setPadding(new Insets(10));
         anonymityVerifierButton.setOnAction(e -> {
             AnonymityVerifier anonymityVerifier = new AnonymityVerifier();
             anonymityVerifier.start(new Stage());
         });
+
+        // Security Validation Risk Reduction Prototype
         Button securityValidationButton = new Button("Security Validation");
         securityValidationButton.setPadding(new Insets(10));
         securityValidationButton.setOnAction(e -> {
             SecurityValidation securityValidation = new SecurityValidation();
             securityValidation.start(new Stage());
         });
+
+        // Havent added risk reduction 4
         Button riskReduction4 = new Button("Risk Reduction Prototype 4");
         riskReduction4.setPadding(new Insets(10));
+
+        // Adding everything to the main menu
         mainMenu.getChildren().addAll(planningPokerButton, scalabilityAnalyzerButton, anonymityVerifierButton, securityValidationButton, riskReduction4);
         mainMenu.setAlignment(Pos.CENTER);
         mainMenu.setPadding(new Insets(5));

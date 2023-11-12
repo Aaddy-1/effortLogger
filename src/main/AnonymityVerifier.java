@@ -1,7 +1,8 @@
+package main;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -87,6 +88,7 @@ public class AnonymityVerifier extends Application {
         showScreen(mainMenu, "Upload Files", primaryStage);
     }
 
+    // This function reads the contents from the file and then makes the view report button visible
     private void fileReader(File selectedFile, Button button, Label label) {
             try {
                 Scanner myScanner = new Scanner(selectedFile);
@@ -110,6 +112,7 @@ public class AnonymityVerifier extends Application {
             
     }
 
+    // This function is used to verify whether the report has been properly anonymized
     public boolean verifyAnonymization(String originalReport, String anonymizedReport) {
         // In a real application, you would implement the verification logic here.
         // For this prototype, we'll assume it's properly anonymized if the lengths match.
