@@ -9,9 +9,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -31,6 +33,8 @@ public class PlanningPokerApp extends Application {
     private int estimation3;
     private int estimation4;
     private String currentUser;
+    private UserData userData;
+    private UserStory userStory;
 
     public class UserStory {
         String title = "No title";
@@ -163,8 +167,10 @@ public class PlanningPokerApp extends Application {
         TextArea descriptionInput = new TextArea();
         Button startPlanningPokerButton = new Button("Start Planning Poker");
         startPlanningPokerButton.setOnAction(e -> {
-            UserStory userStory = createUserStory(titleInput, descriptionInput);
-            startPlanningPoker(userStory);
+            // UserStory userStory = createUserStory(titleInput, descriptionInput);
+            // Fake User Story
+            UserStory userStory = new UserStory("Fake User Story 1", "Fake User Story 1 Description");
+            startPlanningPoker(userStory, userData);
         });
         Button backButtonUserStory = new Button("Back");
         backButtonUserStory.setOnAction((e -> showScreen(mainMenu, "Main Menu")));
@@ -177,7 +183,11 @@ public class PlanningPokerApp extends Application {
         // This is our main menu
         Button planningPokerButton = new Button("Start planning poker session");
         planningPokerButton.setPadding(new Insets(10));
-        planningPokerButton.setOnAction(e -> showScreen(userStoryScreen, "Adding user stories"));
+        // planningPokerButton.setOnAction(e -> showScreen(userStoryScreen, "Adding user stories"));
+        planningPokerButton.setOnAction(e -> {
+            userStory = new UserStory("Fake User Story 1", "Fake User Story 1 Description");
+            startPlanningPoker(userStory, userData);
+        });
         Button scalabilityAnalyzerButton = new Button("Scalability Analyzer");
         scalabilityAnalyzerButton.setPadding(new Insets(10));
         scalabilityAnalyzerButton.setOnAction(e -> {
@@ -224,11 +234,11 @@ public class PlanningPokerApp extends Application {
                 currentUser = username;
 
                 // This is our imported user data
-                UserData data = importHistoricalData(currentUser);
+                userData = importHistoricalData(currentUser);
 
-                System.out.println("Imported User Data");
-                System.out.println(data.getUsername());
-                System.out.println(data.getData());
+                // System.out.println("Imported User Data");
+                // System.out.println(data.getUsername());
+                // System.out.println(data.getData());
                 showScreen(mainMenu, "Main Menu");
             }
         });
@@ -246,15 +256,111 @@ public class PlanningPokerApp extends Application {
         borderPane.setCenter(screen);
     }
 
-    private void startPlanningPoker(UserStory userStory) {
-        renderPlanningPokerMainStage();
+    public void renderHistoricalEstimationPage(UserStory userStory, UserData userData) {
+        VBox vbox = new VBox(10);
+        vbox.setPadding(new Insets(20));
 
-        Screen screen = Screen.getPrimary();
-        Rectangle2D screenBounds = screen.getVisualBounds();
-        estimationStage1 = createPlanningPokerEstimationStage(userStory, screenBounds.getMinX() + 20, screenBounds.getMinY() + 20, 1);
-        estimationStage2 = createPlanningPokerEstimationStage(userStory, screenBounds.getMaxX() - 320, screenBounds.getMinY() + 20, 2);
-        estimationStage3 = createPlanningPokerEstimationStage(userStory, screenBounds.getMinX() + 20, screenBounds.getMaxY() - 220, 3);
-        estimationStage4 = createPlanningPokerEstimationStage(userStory, screenBounds.getMaxX() - 320, screenBounds.getMaxY() - 220, 4);
+        Label titleLabel = new Label("User Story: " + userStory.getTitle());
+        Label descriptionLabel = new Label("Description: " + userStory.getDescription());
+        vbox.getChildren().addAll(titleLabel, descriptionLabel);
+
+        // Pick Relevant Historical Projects section
+        Label pickProjectsLabel = new Label("Pick Relevant Historical Projects:");
+        vbox.getChildren().add(pickProjectsLabel);
+
+        for (HistoricalData historicalData : userData.getData()) {
+            CheckBox checkBox = new CheckBox(historicalData.getTitle() + "\nDescription: " +
+                    historicalData.getDescription() + "\nTime: " + historicalData.getTime());
+            checkBox.setSelected(true);
+
+            ComboBox<Integer> weightComboBox = new ComboBox<>(FXCollections.observableArrayList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+            weightComboBox.setValue(1);
+
+            checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                weightComboBox.setDisable(!newValue);
+            });
+
+            vbox.getChildren().add(new HBox(10, checkBox, new Label("Weight:"), weightComboBox));
+        }
+
+        Button produceEstimateButton = new Button("Produce Estimate");
+        produceEstimateButton.setOnAction(event -> {
+            // Compute weighted average estimate
+            double totalWeightedTime = 0;
+            double totalWeight = 0;
+
+            for (Node node : vbox.getChildren()) {
+                if (node instanceof HBox) {
+                    HBox hBox = (HBox) node;
+                    CheckBox checkBox = (CheckBox) hBox.getChildren().get(0);
+                    ComboBox<Integer> weightComboBox = (ComboBox<Integer>) hBox.getChildren().get(2);
+
+                    if (checkBox.isSelected()) {
+                        int weight = weightComboBox.getValue();
+                        totalWeightedTime += weight * getHistoricalDataByTitle(userData, checkBox.getText()).getTime();
+                        totalWeight += weight;
+                    }
+                }
+            }
+
+            double weightedAverage = totalWeightedTime / totalWeight;
+
+            showEstimationResult(weightedAverage);
+        });
+
+        vbox.getChildren().add(produceEstimateButton);
+
+        showScreen(vbox, "Historical Estimation");
+    }
+
+    private void showEstimationResult(double weightedAverage) {
+        VBox resultVBox = new VBox(10);
+        resultVBox.setPadding(new Insets(20));
+        Label resultLabel = new Label("Computed Estimate: " + weightedAverage);
+
+        // Assuming test users' estimates
+        Label userEstimatesLabel = new Label("Estimations from other users:");
+        Label testUser2Label = new Label("Estimation from testuser2: 40");
+        Label testUser3Label = new Label("Estimation from testuser3: 40");
+        Label testUser4Label = new Label("Estimation from testuser4: 40");
+
+        userEstimatesLabel.setStyle("-fx-font-weight: bold;");
+
+        resultVBox.getChildren().addAll(resultLabel, userEstimatesLabel, testUser2Label, testUser3Label, testUser4Label);
+
+        if (weightedAverage == 40) {
+            Button finishPlanningPokerButton = new Button("Finish Planning Poker");
+            finishPlanningPokerButton.setOnAction(event -> showScreen(mainMenu, "Main Menu"));
+            resultVBox.getChildren().add(finishPlanningPokerButton);
+        } else {
+            Button goBackButton = new Button("Go Back To Adjust Estimate");
+            goBackButton.setOnAction(event -> renderHistoricalEstimationPage(userStory, userData));
+            resultVBox.getChildren().add(goBackButton);
+        }
+
+        showScreen(resultVBox, "Estimation Result");
+    }
+
+    private HistoricalData getHistoricalDataByTitle(UserData userData, String title) {
+        for (HistoricalData historicalData : userData.getData()) {
+            System.out.println(historicalData.getTitle());
+            if (historicalData.getTitle().equals(title.split("\n")[0])) {
+                return historicalData;
+            }
+        }
+        return null;
+    }
+
+    private void startPlanningPoker(UserStory userStory, UserData userData) {
+        renderHistoricalEstimationPage(userStory, userData);
+        // renderPlanningPokerMainStage();
+
+        // Screen screen = Screen.getPrimary();
+        // Rectangle2D screenBounds = screen.getVisualBounds();
+        // estimationStage1 = createPlanningPokerEstimationStage(userStory, screenBounds.getMinX() + 20, screenBounds.getMinY() + 20, 1);
+        // estimationStage2 = createPlanningPokerEstimationStage(userStory, screenBounds.getMaxX() - 320, screenBounds.getMinY() + 20, 2);
+        // estimationStage3 = createPlanningPokerEstimationStage(userStory, screenBounds.getMinX() + 20, screenBounds.getMaxY() - 220, 3);
+        // estimationStage4 = createPlanningPokerEstimationStage(userStory, screenBounds.getMaxX() - 320, screenBounds.getMaxY() - 220, 4);
     }
 
     private void renderPlanningPokerMainStage() {
