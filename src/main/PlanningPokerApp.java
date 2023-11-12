@@ -3,7 +3,6 @@ package main;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,7 +11,6 @@ import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -20,7 +18,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class PlanningPokerApp extends Application {
@@ -278,39 +275,17 @@ public class PlanningPokerApp extends Application {
     }
 
     public void renderHistoricalEstimationPage(UserStory userStory, UserData userData) {
-        VBox vbox = new VBox(10);
-        vbox.setPadding(new Insets(20));
+        
+        EstimationPage estimationInterface = new EstimationPage(userStory, userData);
+        VBox estimationVBox = estimationInterface.getVBox();
+        Button produceEstimateButton = estimationInterface.getEstimateButton();
 
-        Label titleLabel = new Label("User Story: " + userStory.getTitle());
-        Label descriptionLabel = new Label("Description: " + userStory.getDescription());
-        vbox.getChildren().addAll(titleLabel, descriptionLabel);
-
-        // Pick Relevant Historical Projects section
-        Label pickProjectsLabel = new Label("Pick Relevant Historical Projects:");
-        vbox.getChildren().add(pickProjectsLabel);
-
-        for (HistoricalData historicalData : userData.getData()) {
-            CheckBox checkBox = new CheckBox(historicalData.getTitle() + "\nDescription: " +
-                    historicalData.getDescription() + "\nTime: " + historicalData.getTime());
-            checkBox.setSelected(true);
-
-            ComboBox<Integer> weightComboBox = new ComboBox<>(FXCollections.observableArrayList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
-            weightComboBox.setValue(1);
-
-            checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
-                weightComboBox.setDisable(!newValue);
-            });
-
-            vbox.getChildren().add(new HBox(10, checkBox, new Label("Weight:"), weightComboBox));
-        }
-
-        Button produceEstimateButton = new Button("Produce Estimate");
         produceEstimateButton.setOnAction(event -> {
             // Compute weighted average estimate
             double totalWeightedTime = 0;
             double totalWeight = 0;
 
-            for (Node node : vbox.getChildren()) {
+            for (Node node : estimationVBox.getChildren()) {
                 if (node instanceof HBox) {
                     HBox hBox = (HBox) node;
                     CheckBox checkBox = (CheckBox) hBox.getChildren().get(0);
@@ -329,42 +304,30 @@ public class PlanningPokerApp extends Application {
             showEstimationResult(weightedAverage);
         });
 
-        vbox.getChildren().add(produceEstimateButton);
-
-        showScreen(vbox, "Historical Estimation");
+        showScreen(estimationVBox, "Historical Estimation");
     }
 
     private void showEstimationResult(double weightedAverage) {
-        VBox resultVBox = new VBox(10);
-        resultVBox.setPadding(new Insets(20));
-        Label resultLabel = new Label("Computed Estimate: " + weightedAverage);
 
-        // Assuming test users' estimates
-        Label userEstimatesLabel = new Label("Estimations from other users:");
-        Label testUser2Label = new Label("Estimation from testuser2: 40");
-        Label testUser3Label = new Label("Estimation from testuser3: 40");
-        Label testUser4Label = new Label("Estimation from testuser4: 40");
-
-        userEstimatesLabel.setStyle("-fx-font-weight: bold;");
-
-        resultVBox.getChildren().addAll(resultLabel, userEstimatesLabel, testUser2Label, testUser3Label, testUser4Label);
+        EstimationResult estimationResultInterface = new EstimationResult(weightedAverage);
+        VBox estimationVBox = estimationResultInterface.getVBox();
 
         if (weightedAverage == 40) {
             Button finishPlanningPokerButton = new Button("Finish Planning Poker");
             finishPlanningPokerButton.setOnAction(event -> showScreen(mainMenu, "Main Menu"));
-            resultVBox.getChildren().add(finishPlanningPokerButton);
+            estimationVBox.getChildren().add(finishPlanningPokerButton);
         } else {
             Button goBackButton = new Button("Go Back To Adjust Estimate");
             goBackButton.setOnAction(event -> renderHistoricalEstimationPage(userStoryList.get(0), userData));
-            resultVBox.getChildren().add(goBackButton);
+            estimationVBox.getChildren().add(goBackButton);
         }
 
-        showScreen(resultVBox, "Estimation Result");
+        showScreen(estimationVBox, "Estimation Result");
     }
 
     private HistoricalData getHistoricalDataByTitle(UserData userData, String title) {
         for (HistoricalData historicalData : userData.getData()) {
-            System.out.println(historicalData.getTitle());
+            // System.out.println(historicalData.getTitle());
             if (historicalData.getTitle().equals(title.split("\n")[0])) {
                 return historicalData;
             }
