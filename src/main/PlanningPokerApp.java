@@ -31,6 +31,7 @@ public class PlanningPokerApp extends Application {
     private int estimation3;
     private int estimation4;
     private String currentUser;
+    private ArrayList<UserStory> userStoryList = new ArrayList<UserStory>();
 
     public class UserStory {
         String title = "No title";
@@ -55,11 +56,14 @@ public class PlanningPokerApp extends Application {
         }
     }
 
+    // Author: Aadeesh Sharma
+    // Historical Data object which contains the title, description, and time taken
     public class HistoricalData {
         private String title = "No Title";
         private String description = "No Description";
         private int time = -1;
 
+        // Getter and Setter methods
         public String getTitle() {
             return this.title;
         }
@@ -79,10 +83,15 @@ public class PlanningPokerApp extends Application {
             this.time = time;
         }
     }
-
+    
+    // Author: Aadeesh Sharma
+    // This class contains the username and historical data of a user
     public class UserData {
         String username = "No Username";
+        // The historical data is stored as a list
         ArrayList<HistoricalData> historicalData = null;
+
+        // Getter and Setter methods
         public String getUsername() {
             return this.username;
         }
@@ -97,9 +106,13 @@ public class PlanningPokerApp extends Application {
         }
     }
 
+    // Author: Aadeesh Sharma
+    // This function imports historical data of the given from the JSON file
     public UserData importHistoricalData(String username) {
+        // Creating a new UserData class for the user
         UserData userData = new UserData();
         String filePath = "historicalProjects.json";
+        // Our list of previously completed historical projects
         ArrayList<HistoricalData> readData = new ArrayList<HistoricalData>();
         // Create ObjectMapper instance
         ObjectMapper objectMapper = new ObjectMapper();
@@ -108,7 +121,7 @@ public class PlanningPokerApp extends Application {
         // Read JSON file as JsonNode
         try {
             JsonNode jsonNode = objectMapper.readTree(new File(filePath));
-
+            // We loop through the file until we find the required user
             for (JsonNode userNode : jsonNode.get("users")) {
                 String currUser = userNode.get("username").asText();
     
@@ -118,8 +131,8 @@ public class PlanningPokerApp extends Application {
     
                     // Iterate through each project for the target user
                     for (JsonNode projectNode : userNode.get("projects")) {
+                        // We create a new HistoricalData object for each previous project
                         HistoricalData data = new HistoricalData();
-
                         String title = projectNode.get("title").asText();
                         data.setTitle(title);
                         String description = projectNode.get("description").asText();
@@ -129,14 +142,15 @@ public class PlanningPokerApp extends Application {
                         
                         readData.add(data);
                         // Process project data
-                        System.out.println("  Project Title: " + title);
-                        System.out.println("  Description: " + description);
-                        System.out.println("  Time Taken: " + timeTaken + " hours");
-                        System.out.println();
+                        // System.out.println("  Project Title: " + title);
+                        // System.out.println("  Description: " + description);
+                        // System.out.println("  Time Taken: " + timeTaken + " hours");
+                        // System.out.println();
                     }
                     break;
                 }
             }
+            // Adding the list of previous projects to our userData object
             userData.setData(readData);
         }   
         catch(IOException e) {
@@ -151,33 +165,42 @@ public class PlanningPokerApp extends Application {
         this.primaryStage = primaryStage;
         // Create UI components
         borderPane = new BorderPane();
-        // These will be our main screens for now
-        mainMenu = new VBox(50, new Text("EffortLoggerV2.0 Main Menu"));
-        VBox userStoryScreen = new VBox(50, new Text("Add a User Story"));
 
-        // This is our user story screen
-        Label titleLabel = new Label("Enter the title of the user story");
-        TextField titleInput = new TextField();
-        titleInput.setPrefSize(20, 30);
-        Label descriptionLabel = new Label("Enter the description of the user story here");
-        TextArea descriptionInput = new TextArea();
-        Button startPlanningPokerButton = new Button("Start Planning Poker");
-        startPlanningPokerButton.setOnAction(e -> {
-            UserStory userStory = createUserStory(titleInput, descriptionInput);
-            startPlanningPoker(userStory);
+        // Creating the logic for adding user stories
+        // Importing the interface
+        UserStoryUI userStoryInterface = new UserStoryUI();
+        // Getting the VBox from the interface, this contains all of our UI elements
+        VBox userStoryScreen = userStoryInterface.getVBox();
+        // This button will add the entered user story to the list
+        Button addButtonUserStory = userStoryInterface.getAddButton();
+        addButtonUserStory.setOnAction(e -> {
+            TextField title = userStoryInterface.getTitle();
+            TextArea description = userStoryInterface.getDescription();
+            UserStory newStory = createUserStory(title, description);
+            userStoryInterface.onAddClick(title, description);
+            // Creating a new user story object and adding it to the list
+            userStoryList.add(newStory);
+            for (int i = 0; i < userStoryList.size(); i++) {
+                System.err.println("Yay");
+                System.out.println(userStoryList.get(i).getTitle());
+            }
         });
-        Button backButtonUserStory = new Button("Back");
-        backButtonUserStory.setOnAction((e -> showScreen(mainMenu, "Main Menu")));
-        HBox buttonsUserStory = new HBox();
-        buttonsUserStory.getChildren().addAll(backButtonUserStory, startPlanningPokerButton);
-        descriptionInput.setPrefSize(20, 80);
-        userStoryScreen.getChildren().addAll(titleLabel, titleInput, descriptionLabel, descriptionInput, buttonsUserStory);
-        userStoryScreen.setAlignment(Pos.CENTER);
+        // To go back to the main menu
+        Button backButtonUserStory = userStoryInterface.getBackButton();
+        backButtonUserStory.setOnAction(e -> {
+            showScreen(mainMenu, "EffortLoggerV2.0 Main Menu");
+        });
+        // This button will be added to the main menu in order to access this menu
+        Button addUserStoriesButton = new Button("Add User Stories");
+        addUserStoriesButton.setPadding(new Insets(10));
+        addUserStoriesButton.setOnAction(e -> showScreen(userStoryScreen, "Adding user stories"));
 
-        // This is our main menu
+        // This button will start planning poker
         Button planningPokerButton = new Button("Start planning poker session");
         planningPokerButton.setPadding(new Insets(10));
         planningPokerButton.setOnAction(e -> showScreen(userStoryScreen, "Adding user stories"));
+        
+        // Scalability Analyzer Risk Reduction Prototype
         Button scalabilityAnalyzerButton = new Button("Scalability Analyzer");
         scalabilityAnalyzerButton.setPadding(new Insets(10));
         scalabilityAnalyzerButton.setOnAction(e -> {
@@ -206,7 +229,8 @@ public class PlanningPokerApp extends Application {
         riskReduction4.setPadding(new Insets(10));
 
         // Adding everything to the main menu
-        mainMenu.getChildren().addAll(planningPokerButton, scalabilityAnalyzerButton, anonymityVerifierButton, securityValidationButton, riskReduction4);
+        mainMenu = new VBox(50, new Text("EffortLoggerV2.0 Main Menu"));
+        mainMenu.getChildren().addAll(addUserStoriesButton, planningPokerButton, scalabilityAnalyzerButton, anonymityVerifierButton, securityValidationButton, riskReduction4);
         mainMenu.setAlignment(Pos.CENTER);
         mainMenu.setPadding(new Insets(5));
 

@@ -1,3 +1,5 @@
+// Author: Aadeesh Sharma
+
 package main;
 
 import java.io.File;
@@ -39,9 +41,6 @@ public class LoginScreen extends VBox {
 
         loginButton = new Button("Login");
 
-        // loginButton.setOnAction(e -> {
-        //     setOnLoginButtonClick();
-        // });
 
         // Add components to VBox
         getChildren().addAll(usernameTextField, passwordField, loginButton);
@@ -52,28 +51,24 @@ public class LoginScreen extends VBox {
         return this;
     }
 
-    // You can provide methods to access the entered username and password if needed
+    // Getter methods
     public String getUsername() {
         return usernameTextField.getText();
     }
-
     public String getPassword() {
         return passwordField.getText();
     }
-
     public Button getLoginButton() {
         return this.loginButton;
     }
-
     public Boolean getValidation() {
         return this.validated;
     }
 
-    // You can provide a method to set an event handler for the login button
+    // Logic to check the entered username and password
     public Boolean setOnLoginButtonClick(String username, String password) {
         String credentialPath = "userCredentials.json";
         ObjectMapper objectMapper = new ObjectMapper();
-        System.out.println(" CLICKED");
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         String message = "Your username or password is incorrect";
         alert.setTitle("Incorrect Credentials");
@@ -104,7 +99,8 @@ public class LoginScreen extends VBox {
             // Print the lists
             System.out.println("Usernames: " + usernames);
             System.out.println("Passwords: " + passwords);
-
+            
+            // Checking if the username and passwords are correct relative to each other
             int nameIndex = usernames.indexOf(username);
             if (nameIndex == -1) {
                 alert.showAndWait();
@@ -124,6 +120,4 @@ public class LoginScreen extends VBox {
         }
         return false;
     }
-
-    
 }
