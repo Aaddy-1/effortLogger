@@ -1,0 +1,65 @@
+{
+    "users": [
+      {
+        "username": "testuser1",
+        "projects": [
+          {
+            "title": "Project A",
+            "description": "Developed a web application",
+            "timeTaken": 40
+          },
+          {
+            "title": "Project B",
+            "description": "Implemented new features in mobile app",
+            "timeTaken": 30
+          }
+        ]
+      },
+      {
+        "username": "sampleuser2",
+        "projects": [
+          {
+            "title": "Project C",
+            "description": "Designed a database schema",
+            "timeTaken": 25
+          },
+          {
+            "title": "Project D",
+            "description": "Optimized server performance",
+            "timeTaken": 50
+          }
+        ]
+      },
+      {
+        "username": "demoaccount3",
+        "projects": [
+          {
+            "title": "Project E",
+            "description": "Developed a mobile game",
+            "timeTaken": 35
+          },
+          {
+            "title": "Project F",
+            "description": "Created a machine learning model",
+            "timeTaken": 60
+          }
+        ]
+      },
+      {
+        "username": "fakeuser4",
+        "projects": [
+          {
+            "title": "Project E",
+            "description": "Developed a mobile game",
+            "timeTaken": 35
+          },
+          {
+            "title": "Project F",
+            "description": "Created a machine learning model",
+            "timeTaken": 60
+          }
+        ]
+      }
+    ]
+  }
+  

@@ -30,6 +30,7 @@ public class PlanningPokerApp extends Application {
     private int estimation2;
     private int estimation3;
     private int estimation4;
+    private String currentUser;
 
     public class UserStory {
         String title = "No title";
@@ -52,6 +53,97 @@ public class PlanningPokerApp extends Application {
         public String getDescription() {
             return this.description;
         }
+    }
+
+    public class HistoricalData {
+        private String title = "No Title";
+        private String description = "No Description";
+        private int time = -1;
+
+        public String getTitle() {
+            return this.title;
+        }
+        public String getDescription() {
+            return this.description;
+        }
+        public int getTime() {
+            return this.time;
+        }
+        public void setTitle(String title) {
+            this.title = title;
+        }
+        public void setDescription(String description) {
+            this.description = description;
+        }
+        public void setTime(int time) {
+            this.time = time;
+        }
+    }
+
+    public class UserData {
+        String username = "No Username";
+        ArrayList<HistoricalData> historicalData = null;
+        public String getUsername() {
+            return this.username;
+        }
+        public ArrayList<HistoricalData> getData() {
+            return this.historicalData;
+        }
+        public void setUsername(String username) {
+            this.username = username;
+        }
+        public void setData(ArrayList<HistoricalData> data) {
+            this.historicalData = data;
+        }
+    }
+
+    public UserData importHistoricalData(String username) {
+        UserData userData = new UserData();
+        String filePath = "historicalProjects.json";
+        ArrayList<HistoricalData> readData = new ArrayList<HistoricalData>();
+        // Create ObjectMapper instance
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        userData.setUsername(username);
+        // Read JSON file as JsonNode
+        try {
+            JsonNode jsonNode = objectMapper.readTree(new File(filePath));
+
+            for (JsonNode userNode : jsonNode.get("users")) {
+                String currUser = userNode.get("username").asText();
+    
+                // Check if the current user is the target user
+                if (currUser.equals(username)) {
+                    System.out.println("Found Username: " + username);
+    
+                    // Iterate through each project for the target user
+                    for (JsonNode projectNode : userNode.get("projects")) {
+                        HistoricalData data = new HistoricalData();
+
+                        String title = projectNode.get("title").asText();
+                        data.setTitle(title);
+                        String description = projectNode.get("description").asText();
+                        data.setDescription(description);
+                        int timeTaken = projectNode.get("timeTaken").asInt();
+                        data.setTime(timeTaken);
+                        
+                        readData.add(data);
+                        // Process project data
+                        System.out.println("  Project Title: " + title);
+                        System.out.println("  Description: " + description);
+                        System.out.println("  Time Taken: " + timeTaken + " hours");
+                        System.out.println();
+                    }
+                    break;
+                }
+            }
+            userData.setData(readData);
+        }   
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+        
+        return userData;
     }
 
     @Override
@@ -129,6 +221,14 @@ public class PlanningPokerApp extends Application {
             Boolean result = login.setOnLoginButtonClick(username, password);
 
             if (result) {
+                currentUser = username;
+
+                // This is our imported user data
+                UserData data = importHistoricalData(currentUser);
+
+                System.out.println("Imported User Data");
+                System.out.println(data.getUsername());
+                System.out.println(data.getData());
                 showScreen(mainMenu, "Main Menu");
             }
         });
