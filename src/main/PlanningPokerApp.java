@@ -234,16 +234,19 @@ public class PlanningPokerApp extends Application {
         mainMenu.setAlignment(Pos.CENTER);
         mainMenu.setPadding(new Insets(5));
 
+        // Importing the login screen interface
         LoginScreen login = new LoginScreen();
+        // Getting the login VBox from the interface
         VBox loginBox = login.getVBox();
         Button loginButton = login.getLoginButton();
 
         loginButton.setOnAction(e -> {
             String username = login.getUsername();
             String password = login.getPassword();
-
+            // We get the result of the password check when we click on the button
             Boolean result = login.setOnLoginButtonClick(username, password);
-
+            
+            // If it is successful, we set the current user as the username and import their data
             if (result) {
                 currentUser = username;
 
@@ -253,6 +256,7 @@ public class PlanningPokerApp extends Application {
                 System.out.println("Imported User Data");
                 System.out.println(data.getUsername());
                 System.out.println(data.getData());
+                // After we import the data we go to the main menu
                 showScreen(mainMenu, "Main Menu");
             }
         });
