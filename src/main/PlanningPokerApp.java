@@ -1,5 +1,13 @@
 package main;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -110,11 +118,27 @@ public class PlanningPokerApp extends Application {
         mainMenu.setAlignment(Pos.CENTER);
         mainMenu.setPadding(new Insets(5));
 
+        LoginScreen login = new LoginScreen();
+        VBox loginBox = login.getVBox();
+        Button loginButton = login.getLoginButton();
+
+        loginButton.setOnAction(e -> {
+            String username = login.getUsername();
+            String password = login.getPassword();
+
+            Boolean result = login.setOnLoginButtonClick(username, password);
+
+            if (result) {
+                showScreen(mainMenu, "Main Menu");
+            }
+        });
+
         // Setting up the scene
         Scene scene = new Scene(borderPane, 500, 500);
         primaryStage.setScene(scene);
         primaryStage.show();
-        showScreen(mainMenu, "Main Menu");
+        
+        showScreen(loginBox, "Login");
     }
         
     private void showScreen(VBox screen, String title) {
