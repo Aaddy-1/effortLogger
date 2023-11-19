@@ -31,7 +31,6 @@ public class AnonymityVerifier extends Application {
         Label originalTextArea = new Label(fileContents);
         originalTextArea.setWrapText(true);
         Label anonymizedLabel = new Label("Anonymized Report:");
-        // We will implement the actual anonymization function later
         
         Label anonymizedTextArea = new Label(anonymizedText);
         Button backButton = new Button("Back to file upload");
@@ -49,8 +48,7 @@ public class AnonymityVerifier extends Application {
             String originalReport = originalTextArea.getText();
             String anonymizedReport = anonymizedTextArea.getText();
 
-            // In a real application, this is where the verification logic would go.
-            // For now, we'll just display a message for demonstration purposes.
+            // Checking for anonymization
             boolean isAnonymized = verifyAnonymization(fileContents, anonymizedReport);
             if (isAnonymized) {
                 showAlert("Verification Successful", "The report is properly anonymized.");
@@ -60,7 +58,7 @@ public class AnonymityVerifier extends Application {
         });
 
 
-        // Uploading files screen
+        // Uploading files screen/main menu
         VBox mainMenu = new VBox(50, new Text("Upload files here"));
         mainMenu.setAlignment(Pos.CENTER);
         mainMenu.setPadding(new Insets(5));
@@ -68,7 +66,9 @@ public class AnonymityVerifier extends Application {
         Button goToVerification = new Button("See Anonymized Report");
         goToVerification.setOnAction(e -> showScreen(root, "Anonymized Report", primaryStage));
         goToVerification.setVisible(false);
+        // File choose object will help us open the dialog box to upload file
         FileChooser fileChooser = new FileChooser();
+        // Selecting the file from the dialog box and then calling file reader
         fileUploadButton.setOnAction(e -> {
             File selectedFile = fileChooser.showOpenDialog(primaryStage);
             fileReader(selectedFile, goToVerification, originalTextArea, anonymizedTextArea);
@@ -87,6 +87,7 @@ public class AnonymityVerifier extends Application {
 
     // This function reads the contents from the file and then makes the view report button visible
     private void fileReader(File selectedFile, Button button, Label fileLabel, Label anonymizedLabel) {
+        // Reading the file line by line
             try {
                 Scanner myScanner = new Scanner(selectedFile);
                 while (myScanner.hasNextLine()) {
@@ -99,16 +100,18 @@ public class AnonymityVerifier extends Application {
             catch (FileNotFoundException fe) {
                 System.out.println("Exception");
             }
+            // Making the view report button visible
             button.setVisible(true);
             fileLabel.setText(fileContents);
 
-            // When we implement actual anonymization we will have to update the value
-            // of the anonymized label inside the anonymization function
+            // Anonymizing the file contents
             anonymizedText = anonymizeText(fileContents);
+            // Setting the value of the label
             anonymizedLabel.setText(anonymizedText);
             
     }
     public String anonymizeText(String text) {
+        // Using a regex to anonymize the employee's name and ID
         String anonymizedString = text.replaceAll("(?<=Employee Name: )(.+)", "XXX");
         anonymizedString = anonymizedString.replaceAll("(?<=Employee ID: )\\d+", "XXX");
         return anonymizedString;
@@ -116,26 +119,28 @@ public class AnonymityVerifier extends Application {
 
     // This function is used to verify whether the report has been properly anonymized
     public boolean verifyAnonymization(String originalReport, String anonymizedReport) {
-        // In a real application, you would implement the verification logic here.
-
+        
+        // Extract the original and anonymized names from the original and anonymized report
         String originalName = extractValue(originalReport, "Employee Name");
         String anonymizedName = extractValue(anonymizedReport, "Employee Name");
 
+        // Extract the original and anonymized IDs from the original and anonymized report
         String originalID = extractValue(originalReport, "Employee ID");
         String anonymizedID = extractValue(anonymizedReport, "Employee ID");
 
+        // We can check if the anonymized and original values are the same or not
         boolean nameAnonymized = !originalName.equals(anonymizedName);
         boolean idAnonymized = !originalID.equals(anonymizedID);
 
-        System.out.println(nameAnonymized);
-        System.out.println(idAnonymized);
-
+        
+        // If they are not the same we return true
         if (nameAnonymized && idAnonymized) {
             return true;
         }
         return false;
     }
 
+    // Displays alert informing whether it was succesfully anonymized or not
     private void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -153,6 +158,7 @@ public class AnonymityVerifier extends Application {
         return "";
     }
 
+    // This function replaces the contents of a screen with the contents of another vbox and changes the tile
     private void showScreen(VBox screen, String title, Stage primaryStage) {
         primaryStage.setTitle(title);
         borderPane.setCenter(screen);

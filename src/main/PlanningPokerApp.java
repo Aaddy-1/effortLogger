@@ -271,13 +271,19 @@ public class PlanningPokerApp extends Application {
         borderPane.setCenter(screen);
     }
 
-    private double calculateWeightedAverage(List<Integer> weights, List<Double> times) {
+    public double calculateWeightedAverage(List<Integer> weights, List<Double> times) {
         double totalWeightedTime = 0;
         double totalWeight = 0;
 
         for (int i = 0; i < weights.size(); i++) {
             int weight = weights.get(i);
             double time = times.get(i);
+
+            // Return -1 if there is a negative value
+            if (weight < 0 || time < 0) {
+                return -1;
+            }
+
             totalWeightedTime += weight * time;
             totalWeight += weight;
         }
