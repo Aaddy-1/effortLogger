@@ -20,6 +20,7 @@ public class AnonymityVerifier extends Application {
 
     private BorderPane borderPane;
     String fileContents = "";
+    String anonymizedText = "";
 
     @Override
     public void start(Stage primaryStage) {
@@ -31,12 +32,8 @@ public class AnonymityVerifier extends Application {
         originalTextArea.setWrapText(true);
         Label anonymizedLabel = new Label("Anonymized Report:");
         // We will implement the actual anonymization function later
-        Label anonymizedTextArea = new Label(
-            "Employee Name: XXXX XXX\n" +
-            "Employee ID: #####\n" +
-            "Project: Project X\n" +
-            "Hours Worked: 40\n" +
-            "");
+        
+        Label anonymizedTextArea = new Label(anonymizedText);
         Button backButton = new Button("Back to file upload");
         anonymizedTextArea.setWrapText(true);
         Button verifyButton = new Button("Verify Anonymization");
@@ -74,7 +71,7 @@ public class AnonymityVerifier extends Application {
         FileChooser fileChooser = new FileChooser();
         fileUploadButton.setOnAction(e -> {
             File selectedFile = fileChooser.showOpenDialog(primaryStage);
-            fileReader(selectedFile, goToVerification, originalLabel);
+            fileReader(selectedFile, goToVerification, originalTextArea, anonymizedTextArea);
         });
 
         mainMenu.getChildren().addAll(fileUploadButton, goToVerification);
@@ -89,7 +86,7 @@ public class AnonymityVerifier extends Application {
     }
 
     // This function reads the contents from the file and then makes the view report button visible
-    private void fileReader(File selectedFile, Button button, Label label) {
+    private void fileReader(File selectedFile, Button button, Label fileLabel, Label anonymizedLabel) {
             try {
                 Scanner myScanner = new Scanner(selectedFile);
                 while (myScanner.hasNextLine()) {
@@ -103,23 +100,40 @@ public class AnonymityVerifier extends Application {
                 System.out.println("Exception");
             }
             button.setVisible(true);
-            label.setText(fileContents);
+            fileLabel.setText(fileContents);
 
-            // When we implement actual anonymization we will have to uopdate the value
+            // When we implement actual anonymization we will have to update the value
             // of the anonymized label inside the anonymization function
-            System.out.println("======");
-            System.out.println(fileContents);
+            anonymizedText = anonymizeText(fileContents);
+            anonymizedLabel.setText(anonymizedText);
             
+    }
+    public String anonymizeText(String text) {
+        String anonymizedString = text.replaceAll("(?<=Employee Name: )(.+)", "XXX");
+        anonymizedString = anonymizedString.replaceAll("(?<=Employee ID: )\\d+", "XXX");
+        return anonymizedString;
     }
 
     // This function is used to verify whether the report has been properly anonymized
     public boolean verifyAnonymization(String originalReport, String anonymizedReport) {
         // In a real application, you would implement the verification logic here.
-        // For this prototype, we'll assume it's properly anonymized if the lengths match.
-        System.out.println("a +" + originalReport);
-        System.out.println(originalReport.length());
-        System.out.println(anonymizedReport.length());
-        return originalReport.length() == anonymizedReport.length();
+
+        String originalName = extractValue(originalReport, "Employee Name");
+        String anonymizedName = extractValue(anonymizedReport, "Employee Name");
+
+        String originalID = extractValue(originalReport, "Employee ID");
+        String anonymizedID = extractValue(anonymizedReport, "Employee ID");
+
+        boolean nameAnonymized = !originalName.equals(anonymizedName);
+        boolean idAnonymized = !originalID.equals(anonymizedID);
+
+        System.out.println(nameAnonymized);
+        System.out.println(idAnonymized);
+
+        if (nameAnonymized && idAnonymized) {
+            return true;
+        }
+        return false;
     }
 
     private void showAlert(String title, String content) {
@@ -128,6 +142,15 @@ public class AnonymityVerifier extends Application {
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    // To extract a particular value froma an entry
+    private String extractValue(String input, String key) {
+        String[] value = input.split(key + ": ");
+        if (value.length > 1) {
+            return value[1].split("\n")[0].trim();
+        }
+        return "";
     }
 
     private void showScreen(VBox screen, String title, Stage primaryStage) {
