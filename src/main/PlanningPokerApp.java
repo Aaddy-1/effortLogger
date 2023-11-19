@@ -180,10 +180,6 @@ public class PlanningPokerApp extends Application {
             userStoryInterface.onAddClick(title, description);
             // Creating a new user story object and adding it to the list
             userStoryList.add(newStory);
-            for (int i = 0; i < userStoryList.size(); i++) {
-                System.err.println("Yay");
-                System.out.println(userStoryList.get(i).getTitle());
-            }
         });
         // To go back to the main menu
         Button backButtonUserStory = userStoryInterface.getBackButton();
