@@ -3,12 +3,12 @@ package main;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javafx.application.Application;
-import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -32,6 +32,7 @@ public class PlanningPokerApp extends Application {
     private String currentUser;
     private UserData userData;
     private ArrayList<UserStory> userStoryList = new ArrayList<UserStory>();
+    private int currentUserStoryIdx = 0;
 
     public class UserStory {
         String title = "No title";
@@ -196,7 +197,7 @@ public class PlanningPokerApp extends Application {
         planningPokerButton.setPadding(new Insets(10));
         // planningPokerButton.setOnAction(e -> showScreen(userStoryScreen, "Adding user stories"));
         planningPokerButton.setOnAction(e -> {
-            startPlanningPoker(userStoryList.get(0), userData);
+            startPlanningPoker(userStoryList.get(currentUserStoryIdx), userData);
         });
         Button scalabilityAnalyzerButton = new Button("Scalability Analyzer");
         scalabilityAnalyzerButton.setPadding(new Insets(10));
@@ -270,6 +271,25 @@ public class PlanningPokerApp extends Application {
         borderPane.setCenter(screen);
     }
 
+    private double calculateWeightedAverage(List<Integer> weights, List<Double> times) {
+        double totalWeightedTime = 0;
+        double totalWeight = 0;
+
+        for (int i = 0; i < weights.size(); i++) {
+            int weight = weights.get(i);
+            double time = times.get(i);
+            totalWeightedTime += weight * time;
+            totalWeight += weight;
+        }
+
+        if (totalWeight == 0) {
+            // Handle division by zero if needed
+            return 0;
+        }
+
+        return totalWeightedTime / totalWeight;
+    }
+
     public void renderHistoricalEstimationPage(UserStory userStory, UserData userData) {
         
         EstimationPage estimationInterface = new EstimationPage(userStory, userData);
@@ -277,9 +297,8 @@ public class PlanningPokerApp extends Application {
         Button produceEstimateButton = estimationInterface.getEstimateButton();
 
         produceEstimateButton.setOnAction(event -> {
-            // Compute weighted average estimate
-            double totalWeightedTime = 0;
-            double totalWeight = 0;
+            List<Integer> weights = new ArrayList<>();
+            List<Double> times = new ArrayList<>();
 
             for (Node node : estimationVBox.getChildren()) {
                 if (node instanceof HBox) {
@@ -289,13 +308,14 @@ public class PlanningPokerApp extends Application {
 
                     if (checkBox.isSelected()) {
                         int weight = weightComboBox.getValue();
-                        totalWeightedTime += weight * getHistoricalDataByTitle(userData, checkBox.getText()).getTime();
-                        totalWeight += weight;
+                        double time = getHistoricalDataByTitle(userData, checkBox.getText()).getTime();
+                        weights.add(weight);
+                        times.add(time);
                     }
                 }
             }
 
-            double weightedAverage = totalWeightedTime / totalWeight;
+            double weightedAverage = calculateWeightedAverage(weights, times);
 
             showEstimationResult(weightedAverage);
         });
@@ -310,7 +330,16 @@ public class PlanningPokerApp extends Application {
 
         if (weightedAverage == 40) {
             Button finishPlanningPokerButton = new Button("Finish Planning Poker");
-            finishPlanningPokerButton.setOnAction(event -> showScreen(mainMenu, "Main Menu"));
+            finishPlanningPokerButton.setOnAction(event -> {
+                currentUserStoryIdx += 1;
+                if (currentUserStoryIdx < userStoryList.size()) 
+                    startPlanningPoker(userStoryList.get(currentUserStoryIdx), userData);
+                else {
+                    userStoryList.clear();
+                    currentUserStoryIdx = 0;
+                    showScreen(mainMenu, "Main Menu");
+                }
+            });
             estimationVBox.getChildren().add(finishPlanningPokerButton);
         } else {
             Button goBackButton = new Button("Go Back To Adjust Estimate");
