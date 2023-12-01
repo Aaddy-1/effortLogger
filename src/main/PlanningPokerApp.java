@@ -161,6 +161,7 @@ public class PlanningPokerApp extends Application {
         return userData;
     }
 
+    // Author: Tathagat Panwar
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
